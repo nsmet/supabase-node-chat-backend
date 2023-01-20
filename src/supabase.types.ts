@@ -54,16 +54,19 @@ export interface Database {
       }
       user_conversation: {
         Row: {
-          conversation_id: string
-          user_id: string
+          conversation_id: string | null
+          id: string
+          user_id: string | null
         }
         Insert: {
-          conversation_id: string
-          user_id: string
+          conversation_id?: string | null
+          id?: string
+          user_id?: string | null
         }
         Update: {
-          conversation_id?: string
-          user_id?: string
+          conversation_id?: string | null
+          id?: string
+          user_id?: string | null
         }
       }
       users: {

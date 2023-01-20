@@ -1,6 +1,37 @@
 import { Response } from "express"
 import supabase from "../utils/supabase"
-import { TypedRequestBody, TypedRequestQueryWithBodyAndParams, User } from '../types';
+import { TypedRequestBody, TypedRequestQuery, TypedRequestQueryWithBodyAndParams, User } from '../types';
+
+export const getAllConversations = async function (req: TypedRequestQuery<{user_id: string}>, res: Response) {
+    // get all conversations this user is attached to 
+    const paticipatingConversationIds = await supabase
+        .from('user_conversation')
+        .select('conversation_id')
+        .eq('user_id', req.query.user_id)
+    console.log(paticipatingConversationIds)
+    
+    if (!paticipatingConversationIds.data?.length) {
+        return res.send([]);
+    }
+
+    const conversations = await supabase
+        .from('conversations')
+        .select(`
+            *, 
+            messages (
+                message,
+                created_at,
+
+                users (
+                    id,
+                    username
+                )
+            )
+        `)
+        .or(`owner_user_id.eq.${req.query.user_id},or(id.in.(${paticipatingConversationIds.data.map((item: any) => item.conversation_id)}))`)
+
+    return res.send(conversations.data)
+}
 
 export const createConversation = async function (req: TypedRequestBody<{owner_id: string, participant_ids: string[], group_name: string}>, res: Response) {
     const {
