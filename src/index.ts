@@ -33,6 +33,20 @@ app.post("/create-user", async function (req: TypedRequestBody<{username: string
     } else {
       res.send(data[0])
     }
-  
+});
+
+app.get("/search-users", async function (req: TypedRequestBody<{userId: string, q: string}>, res: Response) {
+  const { data, error } = await supabase
+    .from('users')
+    .select()
+    .like('username', `%${req.body.q}%`)
+    .neq('id', req.body.userId)
+    .limit(10)
+
+    if (error) {
+      res.send(500)
+    } else {
+      res.send(data)
+    }
 });
 app.listen(3000);
