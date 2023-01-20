@@ -11,7 +11,12 @@ export interface TypedRequestQueryWithBodyAndParams<Params, ReqBody> extends Exp
     params: Params
 }
 
-export interface TypedRequestQueryWithdParams<Params> extends Express.Request {
+export interface TypedRequestQueryAndParams<Params, Query> extends Express.Request {
+    params: Params
+    query: Query,
+}
+
+export interface TypedRequestQueryWithParams<Params> extends Express.Request {
     params: Params
 }
 

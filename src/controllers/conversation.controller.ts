@@ -1,6 +1,12 @@
 import { Response } from "express"
 import supabase from "../utils/supabase"
-import { TypedRequestBody, TypedRequestQuery, TypedRequestQueryWithBodyAndParams, User } from '../types';
+import { 
+    TypedRequestBody, 
+    TypedRequestQuery, 
+    TypedRequestQueryWithBodyAndParams, 
+    TypedRequestQueryAndParams,
+    User 
+} from '../types';
 
 export const getAllConversations = async function (req: TypedRequestQuery<{user_id: string}>, res: Response) {
     // get all conversations this user is attached to 
@@ -8,7 +14,6 @@ export const getAllConversations = async function (req: TypedRequestQuery<{user_
         .from('user_conversation')
         .select('conversation_id')
         .eq('user_id', req.query.user_id)
-    console.log(paticipatingConversationIds)
     
     if (!paticipatingConversationIds.data?.length) {
         return res.send([]);
@@ -104,13 +109,46 @@ export const addMessageToConversation = async function (req: TypedRequestQueryWi
         message,
         created_at: new Date().toLocaleString()
       })
-      .select()
+      .select(`
+        *,
+        users (
+            id,
+            username
+        )
+      `)
   
     if (data.error) {
-    res.send(500)
+        res.send(500)
     } else {
-    res.send(
-        data.data[0]
-    )
+        res.send(
+            data.data[0]
+        )
     }
+}
+
+export const getConversationMessages = async function (req: TypedRequestQueryAndParams<{conversation_id: string} ,{last_message_date: Date}>, res: Response) {
+    const { conversation_id } = req.params;
+    const { last_message_date } = req.query;
+
+    let query = supabase
+        .from('messages')
+        .select(`
+            message,
+            created_at,
+
+            users (
+                id,
+                username
+            )
+        `)
+        .order('created_at', { ascending: true })
+        .eq('conversation_id', conversation_id)
+        
+        if (last_message_date){
+            query = query.gt('created_at', last_message_date)
+        }
+
+    const messages = await query;
+
+    res.send(messages.data)
 }
