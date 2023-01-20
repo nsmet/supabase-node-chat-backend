@@ -1,10 +1,11 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
 import bodyParser from "body-parser";
 import { createClient } from '@supabase/supabase-js'
 
 import { 
   TypedRequestBody, 
-  TypedRequestQuery
+  TypedRequestQuery,
+  TypedRequestQueryWithBodyAndParams
  } from "./types";
 
  import { Database } from "./supabase.types";
@@ -15,7 +16,6 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
- 
 
 
 app.get("/", function (req, res) {
@@ -111,4 +111,31 @@ app.post("/start-conversation", async function (req: TypedRequestBody<{owner_id:
       })
     }
 });
+
+// SEND A MESSAGE
+app.post("/conversations/:conversation_id", async function (req: TypedRequestQueryWithBodyAndParams<{conversation_id: string}, {user_id: string, message: string}>, res: Response) {
+  const conversationid = req.params.conversation_id;
+  const {
+    user_id,
+    message,
+  } = req.body;
+
+  const data = await supabase
+    .from('messages')
+    .upsert({ 
+      conversation_id: conversationid,
+      user_id,
+      message,
+      created_at: new Date().toLocaleString()
+    })
+    .select()
+
+    if (data.error) {
+      res.send(500)
+    } else {
+      res.send(
+        data.data[0]
+      )
+    }
+})  
 app.listen(3000);
