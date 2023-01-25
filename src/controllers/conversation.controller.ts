@@ -14,7 +14,7 @@ export const getAllConversations = async function (req: TypedRequestQuery<{user_
         .from('user_conversation')
         .select('conversation_id')
         .eq('user_id', req.query.user_id)
-    
+
     if (!paticipatingConversationIds.data?.length) {
         return res.send([]);
     }
@@ -24,9 +24,10 @@ export const getAllConversations = async function (req: TypedRequestQuery<{user_
         .select(`
             *, 
             messages (
+                id,
+                conversation_id,
                 message,
                 created_at,
-
                 users (
                     id,
                     username
@@ -51,10 +52,10 @@ export const createConversation = async function (req: TypedRequestBody<{owner_i
       .upsert({ 
         name: group_name,
         owner_user_id: owner_id,
-        created_at: new Date().toLocaleString()
+        created_at: ((new Date()).toISOString()).toLocaleString()
        })
       .select()
-  
+
     if (conversation.error) {
         res.send(500)
     }
@@ -85,9 +86,9 @@ export const createConversation = async function (req: TypedRequestBody<{owner_i
     }
   
     if (conversation.error) {
-        res.send(500)
+        return res.sendStatus(500)
     } else {
-        res.send({
+        return res.send({
             ...conversation.data[0],
             participants
         })
@@ -100,14 +101,14 @@ export const addMessageToConversation = async function (req: TypedRequestQueryWi
       user_id,
       message,
     } = req.body;
-  
+
     const data = await supabase
       .from('messages')
       .upsert({ 
         conversation_id: conversationid,
         user_id,
         message,
-        created_at: new Date().toLocaleString()
+        created_at: ((new Date()).toISOString()).toLocaleString()
       })
       .select(`
         *,
@@ -116,7 +117,7 @@ export const addMessageToConversation = async function (req: TypedRequestQueryWi
             username
         )
       `)
-  
+        
     if (data.error) {
         res.send(500)
     } else {
@@ -133,6 +134,8 @@ export const getConversationMessages = async function (req: TypedRequestQueryAnd
     let query = supabase
         .from('messages')
         .select(`
+            id,
+            conversation_id,
             message,
             created_at,
 
