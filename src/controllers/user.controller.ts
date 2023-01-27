@@ -6,8 +6,8 @@ export const createUser = async function (req: TypedRequestBody<{username: strin
     const { data, error } = await supabase
         .from('users')
         .upsert({ 
-        username: req.body.username,
-        created_at: ((new Date()).toISOString()).toLocaleString()
+            username: req.body.username,
+            created_at: ((new Date()).toISOString()).toLocaleString()
         })
         .select()
 
@@ -19,13 +19,20 @@ export const createUser = async function (req: TypedRequestBody<{username: strin
 }
 
 export const searchUsers =   async function (req: TypedRequestQuery<{user_id: string, q: string}>, res: Response) {
-    const { data, error } = await supabase
+    
+    let query = supabase
       .from('users')
-      .select()
-    //   .like('username', `%${req.query.q}%`)
-      .neq('id', req.query.user_id)
-      .limit(50)
+      .select();
+    
+    if (req.query.q) {
+        query = query.like('username', `%${req.query.q}%`)
+    }
+
+    query = query.neq('id', req.query.user_id)
+    .limit(50);
   
+    const { data, error } = await query;
+    
     if (error) {
         res.send(500)
     } else {
