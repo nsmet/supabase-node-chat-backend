@@ -7,7 +7,7 @@ export const createUser = async function (req: TypedRequestBody<{username: strin
         .from('users')
         .upsert({ 
         username: req.body.username,
-        created_at: new Date().toLocaleString()
+        created_at: ((new Date()).toISOString()).toLocaleString()
         })
         .select()
 
