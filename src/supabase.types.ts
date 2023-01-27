@@ -14,19 +14,19 @@ export interface Database {
           created_at: string
           id: string
           name: string
-          owner_user_id: string | null
+          owner_user_id: string
         }
         Insert: {
           created_at: string
           id?: string
           name: string
-          owner_user_id?: string | null
+          owner_user_id: string
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
-          owner_user_id?: string | null
+          owner_user_id?: string
         }
       }
       messages: {

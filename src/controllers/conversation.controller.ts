@@ -7,7 +7,8 @@ import {
     TypedRequestQueryWithBodyAndParams, 
     TypedRequestQueryAndParams,
     User,
-    Message
+    Message,
+    Conversation
 } from '../types';
 
 export const getAllConversations = async function (req: TypedRequestQuery<{user_id: string}>, res: Response) {
@@ -86,14 +87,18 @@ export const createConversation = async function (req: TypedRequestBody<{owner_i
                 if (actualParticipantUsers.data?.length) participants = actualParticipantUsers.data;
             }
     }
-  
+
+ 
+    
     if (conversation.error) {
         return res.sendStatus(500)
     } else {
-        return res.send({
+        const conv: Conversation = {
             ...conversation.data[0],
             participants
-        })
+        };
+
+        Socket.notifyUsersOnConversationCreate(participant_ids as string[], conv)
     }
 }
 
@@ -117,7 +122,8 @@ export const addMessageToConversation = async function (req: TypedRequestQueryWi
         users (
             id,
             username
-        )
+        ),
+        conversations (*)
       `)
 
     // get the users in this chat, except for the current one
@@ -151,7 +157,7 @@ export const getConversationMessages = async function (req: TypedRequestQueryAnd
             conversation_id,
             message,
             created_at,
-
+    
             users (
                 id,
                 username

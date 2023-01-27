@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { SocketConnectedUsers, SocketSocketIdUserId, User, Message } from '../types';
+import { SocketConnectedUsers, SocketSocketIdUserId, User, Message, Conversation } from '../types';
 
 class Socket {
     private static _instance: Socket;
@@ -43,7 +43,19 @@ class Socket {
                 user.socket.emit('message', message);
             }
         })
-    }   
+    }
+
+    public static notifyUsersOnConversationCreate  (userIds: string[], conversation: Conversation) {
+        userIds.forEach((item) => {
+            const user = this._instance.users[item];
+
+            if (user) {
+                user.socket.emit('newConversation', conversation);
+            }
+        })
+    }
+
+    
 
     static getInstance(server?: Server) {
         if (this._instance) {

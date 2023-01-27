@@ -31,8 +31,9 @@ export interface User {
 export interface Conversation {
     id: string;
     name: string;
-    user_owner_id: string;
+    owner_user_id: string;
     created_at: string;
+    participants?: User[];
 }
 
 export interface Message {
