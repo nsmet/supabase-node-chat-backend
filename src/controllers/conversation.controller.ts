@@ -99,6 +99,7 @@ export const createConversation = async function (req: TypedRequestBody<{owner_i
         };
 
         Socket.notifyUsersOnConversationCreate(participant_ids as string[], conv)
+        return res.send(conv);
     }
 }
 
