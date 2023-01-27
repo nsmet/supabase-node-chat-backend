@@ -1,11 +1,13 @@
 import { Response } from "express"
 import supabase from "../utils/supabase"
+import Socket from '../utils/socket';
 import { 
     TypedRequestBody, 
     TypedRequestQuery, 
     TypedRequestQueryWithBodyAndParams, 
     TypedRequestQueryAndParams,
-    User 
+    User,
+    Message
 } from '../types';
 
 export const getAllConversations = async function (req: TypedRequestQuery<{user_id: string}>, res: Response) {
@@ -117,10 +119,21 @@ export const addMessageToConversation = async function (req: TypedRequestQueryWi
             username
         )
       `)
-        
+
+    // get the users in this chat, except for the current one
+    const userConversationIds = await supabase
+        .from('user_conversation')
+        .select('user_id')
+        .eq('conversation_id', conversationid)
+
     if (data.error) {
         res.send(500)
     } else {
+        if (userConversationIds.data && userConversationIds.data?.length > 1) {
+            const userIdsForMessages = userConversationIds.data.map((item) => item.user_id).filter((item) => item !== user_id);
+            Socket.sendMessageToUsers(userIdsForMessages as string[], data.data[0] as Message)
+        }
+
         res.send(
             data.data[0]
         )
@@ -151,7 +164,7 @@ export const getConversationMessages = async function (req: TypedRequestQueryAnd
             query = query.gt('created_at', last_message_date)
         }
 
-    const messages = await query;
+    const messages = await query;    
 
     res.send(messages.data)
 }

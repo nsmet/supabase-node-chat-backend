@@ -1,6 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import http from 'http';
+import { Server } from 'socket.io';
+
 import { createUser, searchUsers } from './controllers/user.controller';
+import Socket from "./utils/socket";
+
 import { 
   createConversation, 
   addMessageToConversation, 
@@ -9,12 +17,20 @@ import {
 } from './controllers/conversation.controller';
 
 const app = express();
+const server = http.createServer(app);
+const ioServer = new Server(server);
+Socket.getInstance(ioServer);
 
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
+app.use(cors())
 
 app.get("/", function (req, res) {
-  res.send("Hello World");
+  res.writeHead(200, { 'Content-Type':'text/html'});
+  
+  const testpath = path.resolve(__dirname, '../TEST/index.html');
+  const html = fs.readFileSync(testpath);
+  res.end(html);
 });
  
 // USER ENDPOINTS
@@ -29,4 +45,4 @@ app.get("/conversations/:conversation_id/messages", getConversationMessages)
 // SEND A MESSAGE
 app.post("/conversations/:conversation_id/messages/create", addMessageToConversation)
 
-app.listen(3000);
+server.listen(3000);
