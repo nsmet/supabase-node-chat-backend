@@ -22,9 +22,9 @@ export const searchUsers =   async function (req: TypedRequestQuery<{user_id: st
     const { data, error } = await supabase
       .from('users')
       .select()
-      .like('username', `%${req.query.q}%`)
+    //   .like('username', `%${req.query.q}%`)
       .neq('id', req.query.user_id)
-      .limit(10)
+      .limit(50)
   
     if (error) {
         res.send(500)

@@ -126,11 +126,13 @@ export const addMessageToConversation = async function (req: TypedRequestQueryWi
         .select('user_id')
         .eq('conversation_id', conversationid)
 
+    console.log(userConversationIds);
     if (data.error) {
         res.send(500)
     } else {
-        if (userConversationIds.data && userConversationIds.data?.length > 1) {
+        if (userConversationIds.data && userConversationIds.data?.length > 0) {
             const userIdsForMessages = userConversationIds.data.map((item) => item.user_id).filter((item) => item !== user_id);
+            console.log(userIdsForMessages);
             Socket.sendMessageToUsers(userIdsForMessages as string[], data.data[0] as Message)
         }
 
