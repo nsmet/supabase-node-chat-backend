@@ -1,8 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
 import http from 'http';
 import { Server } from 'socket.io';
 
@@ -26,11 +24,7 @@ app.use(bodyParser.json());
 app.use(cors())
 
 app.get("/", function (req, res) {
-  res.writeHead(200, { 'Content-Type':'text/html'});
-  
-  const testpath = path.resolve(__dirname, '../TEST/index.html');
-  const html = fs.readFileSync(testpath);
-  res.end(html);
+  res.send("Hello World");
 });
  
 // USER ENDPOINTS

@@ -88,8 +88,6 @@ export const createConversation = async function (req: TypedRequestBody<{owner_i
             }
     }
 
- 
-    
     if (conversation.error) {
         return res.sendStatus(500)
     } else {
