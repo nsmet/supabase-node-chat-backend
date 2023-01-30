@@ -1,1 +1,2 @@
-# supabase-node-chat-backend
+# Chat backend with Supabase & Socket.io
+

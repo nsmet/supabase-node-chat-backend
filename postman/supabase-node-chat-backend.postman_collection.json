@@ -1,0 +1,249 @@
+{
+	"info": {
+		"_postman_id": "dbb0aeb7-58e6-4208-93d0-1a0d6cc1e26a",
+		"name": "supabase-node-chat-backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Search users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "TypedRequestQuery",
+							"type": "text",
+							"disabled": true
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:3000/users/search?user_id=7e1903aa-0839-445e-b041-8325bae7900f&q=n",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"search"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "7e1903aa-0839-445e-b041-8325bae7900f"
+						},
+						{
+							"key": "q",
+							"value": "n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"arnold\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:3000/users/create",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create conversation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"owner_id\": \"bf6e83b9-926c-4dbd-bf26-5f88118e887f\",\n    \"group_name\": \"First chat\",\n    \"participant_ids\": [\n        \"7e1903aa-0839-445e-b041-8325bae7900f\",\n        \"1748e485-5325-4b4d-924d-3f806d4959fe\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:3000/conversations/create",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"conversations",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": \"7e1903aa-0839-445e-b041-8325bae7900f\",\n    \"message\": \"Our Third message!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:3000/conversations/cf3e3cad-bf7c-48ea-9c69-3b9a99e236e9/messages/create",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"conversations",
+						"cf3e3cad-bf7c-48ea-9c69-3b9a99e236e9",
+						"messages",
+						"create"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Send message",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"75aba5d3-1797-43bb-b448-a8fe507526b0\",\n    \"message\": \"Our Third message!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "127.0.0.1:3000/conversations/ecba6f54-b559-483e-a95b-ee5efcebf5b6/messages/create",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"conversations",
+								"ecba6f54-b559-483e-a95b-ee5efcebf5b6",
+								"messages",
+								"create"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get conversations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:3000/conversations?user_id=7e1903aa-0839-445e-b041-8325bae7900f",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"conversations"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "7e1903aa-0839-445e-b041-8325bae7900f"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get conversation by id with messages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:3000/conversations/cf3e3cad-bf7c-48ea-9c69-3b9a99e236e9/messages",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"conversations",
+						"cf3e3cad-bf7c-48ea-9c69-3b9a99e236e9",
+						"messages"
+					],
+					"query": [
+						{
+							"key": "last_message_date",
+							"value": "2023-01-20T15:40:11",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
