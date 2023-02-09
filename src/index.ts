@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from 'cors';
 import http from 'http';
@@ -13,6 +13,8 @@ import {
   getAllConversations, 
   getConversationMessages 
 } from './controllers/conversation.controller';
+import { getServerAPIKey,getChatToken } from "./controllers/authentication.controller";
+import { secureClientRoutesWithJWTs } from "./utils/auth";
 
 const app = express();
 const server = http.createServer(app);
@@ -23,9 +25,15 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 app.use(cors())
 
+
+app.use(secureClientRoutesWithJWTs);
+
 app.get("/", function (req, res) {
-  res.send("Hello World");
+  return res.send("Hello World");
 });
+// AUTHENTICATION ENDPOINTS
+app.get("/get-server-api-key", getServerAPIKey);
+app.get("/get-chat-token",getChatToken);
  
 // USER ENDPOINTS
 app.post("/users/create", createUser);

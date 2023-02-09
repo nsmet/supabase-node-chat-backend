@@ -3,6 +3,12 @@ import { Socket } from "socket.io"
 export interface TypedRequestBody<T> extends Express.Request {
     body: T
   }
+export interface TypedRequestBodyWithHeader<T> extends Express.Request {
+    body: T
+    headers:{
+        authorization:string
+    }
+  }
   
 export interface TypedRequestQuery<T> extends Express.Request {
     query: T
@@ -59,3 +65,10 @@ export interface SocketConnectedUsers {
 export interface SocketSocketIdUserId {
     [key: string]: string
 }
+
+export interface UserPayLoad {
+    username:string;
+    team:string;
+    iat:number;
+    exp:number
+  }

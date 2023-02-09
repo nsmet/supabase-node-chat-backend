@@ -74,16 +74,19 @@ export interface Database {
           created_at: string
           id: string
           username: string
+          apikey?: string
         }
         Insert: {
           created_at: string
           id?: string
           username: string
+          apikey?: string
         }
         Update: {
           created_at?: string
           id?: string
           username?: string
+          apikey?: string
         }
       }
     }
