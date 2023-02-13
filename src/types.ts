@@ -67,8 +67,8 @@ export interface SocketSocketIdUserId {
 }
 
 export interface UserPayLoad {
-    username:string;
-    team:string;
+    userID:string;
+    companyID:string;
     appID:string;
     iat:number;
     exp:number

@@ -9,24 +9,111 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      api_keys: {
+        Row: {
+          app_id: string
+          company_id: string
+          created_at: string
+          id: string
+          key: string
+          name: string
+          owner_user_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          app_id: string
+          company_id: string
+          created_at?: string
+          id?: string
+          key: string
+          name: string
+          owner_user_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          app_id?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          key?: string
+          name?: string
+          owner_user_id?: string
+          updated_at?: string | null
+        }
+      }
+      apps: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          name: string
+          owner_user_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          name: string
+          owner_user_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          owner_user_id?: string
+          updated_at?: string | null
+        }
+      }
       channels: {
+        Row: {
+          app_id: string
+          created_at: string
+          id: string
+          name: string
+          owner_user_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          id?: string
+          name: string
+          owner_user_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          owner_user_id?: string
+          updated_at?: string | null
+        }
+      }
+      companies: {
         Row: {
           created_at: string
           id: string
           name: string
           owner_user_id: string
+          updated_at: string | null
         }
         Insert: {
-          created_at: string
+          created_at?: string
           id?: string
           name: string
           owner_user_id: string
+          updated_at?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
           owner_user_id?: string
+          updated_at?: string | null
         }
       }
       messages: {
@@ -35,13 +122,15 @@ export interface Database {
           created_at: string
           id: string
           message: string
+          updated_at: string | null
           user_id: string | null
         }
         Insert: {
           channel_id?: string | null
-          created_at: string
+          created_at?: string
           id?: string
           message: string
+          updated_at?: string | null
           user_id?: string | null
         }
         Update: {
@@ -49,6 +138,7 @@ export interface Database {
           created_at?: string
           id?: string
           message?: string
+          updated_at?: string | null
           user_id?: string | null
         }
       }
@@ -71,22 +161,25 @@ export interface Database {
       }
       users: {
         Row: {
+          app_id: string | null
           created_at: string
           id: string
+          updated_at: string | null
           username: string
-          apikey?: string
         }
         Insert: {
-          created_at: string
-          id?: string
-          username: string
-          apikey?: string
-        }
-        Update: {
+          app_id?: string | null
           created_at?: string
           id?: string
+          updated_at?: string | null
+          username: string
+        }
+        Update: {
+          app_id?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string | null
           username?: string
-          apikey?: string
         }
       }
     }
@@ -97,6 +190,9 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }

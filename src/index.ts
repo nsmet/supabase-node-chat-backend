@@ -4,7 +4,7 @@ import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
 
-import { createUser, searchUsers, getAllUsers, getUserByID, updateUserByID, deleteUserByID, connectUser } from './controllers/user.controller';
+import { createUser, searchUsers, getAllUsers, getUserByID, updateUserByID, deleteUserByID, connectUser } from './controllers/users.controller';
 import Socket from "./utils/socket";
 
 import { 
@@ -14,10 +14,12 @@ import {
   getChannelByID, 
   getChannelMessages as getMessagesInAChannel, 
   updateChannelByID
-} from './controllers/channel.controller';
-import { deleteMessageByID, getMessageByID, sendMessageToChannel, updateMessageByID } from "./controllers/message.controller";
+} from './controllers/channels.controller';
+import { deleteMessageByID, getMessageByID, sendMessageToChannel, updateMessageByID } from "./controllers/messages.controller";
 import { getServerAPIKey,getChatToken } from "./controllers/authentication.controller";
 import { secureClientRoutesWithJWTs } from "./utils/auth";
+import { createNewApp,deleteAppByID } from "./controllers/apps.controller";
+import { createNewCompany } from "./controllers/companies.controller";
 
 const app = express();
 const server = http.createServer(app);
@@ -60,6 +62,13 @@ app.post("/messages", sendMessageToChannel)
 app.get("messages/:message_id",getMessageByID);
 app.put("messages/:message_id", updateMessageByID);
 app.delete("messages/:message_id", deleteMessageByID);
+
+// App
+app.post("/apps",createNewApp)
+app.delete("/apps/:app_id", deleteAppByID);
+
+// Companies
+app.post("/companies", createNewCompany);
 
 // Unclear parts
 app.post("users/connect", connectUser);

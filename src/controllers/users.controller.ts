@@ -1,6 +1,6 @@
 import { Response } from "express"
 import supabase from "../utils/supabase"
-import { TypedRequestBody, TypedRequestQuery } from "../types"
+import { TypedRequestBody, TypedRequestQuery, TypedRequestQueryWithParams } from "../types"
 
 export const createUser = async function (req: TypedRequestBody<{username: string}>, res: Response) {
     const { data, error } = await supabase
@@ -10,6 +10,19 @@ export const createUser = async function (req: TypedRequestBody<{username: strin
             created_at: ((new Date()).toISOString()).toLocaleString()
         })
         .select()
+    if (error) {
+        res.send(500)
+    } else {
+        res.send(data[0])
+    }
+}
+export const getAllUsers = async function (req: TypedRequestBody<{app_id: string;}>, res: Response) {
+    // TO DO add pagination
+    const appID = req.body.app_id
+    const { data, error } = await supabase
+    .from('users')
+    .select()
+    .eq('app_id', appID)
 
     if (error) {
         res.send(500)
@@ -17,11 +30,13 @@ export const createUser = async function (req: TypedRequestBody<{username: strin
         res.send(data[0])
     }
 }
-export const getAllUsers = async function (req: TypedRequestBody<{username: string}>, res: Response) {
-    // TODO - write this code
+export const getUserByID = async function (req: TypedRequestQueryWithParams<{user_id: string}>, res: Response) {
+    const userID = req.params.user_id
+
     const { data, error } = await supabase
-        .from('users')
-        .select()
+    .from('users')
+    .select()
+    .eq('id', userID)
 
     if (error) {
         res.send(500)
@@ -29,23 +44,17 @@ export const getAllUsers = async function (req: TypedRequestBody<{username: stri
         res.send(data[0])
     }
 }
-export const getUserByID = async function (req: TypedRequestBody<{username: string}>, res: Response) {
-    // TODO - write this code
-    const { data, error } = await supabase
-        .from('users')
-        .select()
+export const updateUserByID = async function (req: TypedRequestBody<{new_username: string}>, res: Response) {
+    // TO DO - get userID from jwt
+    // And test this one
+    const userID = ""
+    const newUsername = req.body.new_username
 
-    if (error) {
-        res.send(500)
-    } else {
-        res.send(data[0])
-    }
-}
-export const updateUserByID = async function (req: TypedRequestBody<{username: string}>, res: Response) {
-    // TODO - write this code
     const { data, error } = await supabase
         .from('users')
-        .select()
+        .update({
+            username: newUsername
+        }).eq('id', userID).select()
 
     if (error) {
         res.send(500)

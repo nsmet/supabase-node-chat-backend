@@ -5,16 +5,16 @@ import crypto from 'crypto'
 import { UserPayLoad } from "../types";
 import supabase from "../utils/supabase"
 
-async function verifyToken(token:string) {
+function verifyToken(token:string) {
     const jwtKey = process.env.SECRET_JWT_KEY
     if (!jwtKey) throw new Error("No JWT key found")
     if (!token) return false
     try{
-      const {team,username,appID} = await jwt.verify(token,jwtKey) as UserPayLoad
-      if (!team){
+      const {userID,companyID,appID} = jwt.verify(token,jwtKey) as UserPayLoad
+      if (!companyID){
         return false
       }
-      if (!username){
+      if (!userID){
         return false
       }
       if (!appID){
@@ -28,7 +28,8 @@ async function verifyToken(token:string) {
   }
 
 export const secureClientRoutesWithJWTs = async (req:Request, res:Response, next:NextFunction) =>{
-    const nonSecureRoutes = ['/get-chat-token','/get-server-api-key']
+  // TO DO  - need to make sure apps and companies are secure
+  const nonSecureRoutes = ['/get-chat-token','/get-server-api-key',"/apps","/companies"]
     if (nonSecureRoutes.includes(req.path)){
       return next()
     }
@@ -36,7 +37,7 @@ export const secureClientRoutesWithJWTs = async (req:Request, res:Response, next
       return res.status(403).json({ error: 'No credentials sent!' });
     }
     const jwt = req.headers.authorization.split(' ')[1]
-    const isVerified = await verifyToken(jwt)
+    const isVerified = verifyToken(jwt)
   
     if (!isVerified){
       return res.status(401).json({ error: 'Invalid token' });
@@ -67,8 +68,6 @@ export const newAPIKey = async function (keyDetails:{userID:string,appID:string,
 }
 export const isValidAPIKey = async function (appID:string, receivedAPIKey:string) {
   try{
-    console.log({appID})
-    console.log({receivedAPIKey})
         const { data, error } = await supabase
         .from('api_keys')
         .select('key')
