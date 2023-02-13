@@ -4,15 +4,18 @@ import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
 
-import { createUser, searchUsers } from './controllers/user.controller';
+import { createUser, searchUsers, getAllUsers, getUserByID, updateUserByID, deleteUserByID, connectUser } from './controllers/user.controller';
 import Socket from "./utils/socket";
 
 import { 
-  createConversation as createChannel, 
-  addMessageToConversation as addMessageToAChannel, 
-  getAllConversations as getAllChannels, 
-  getConversationMessages as getMessagesInAChannel 
-} from './controllers/conversation.controller';
+  createChannel as createChannel, 
+  deleteChannelByID, 
+  getAllChannels as getAllChannels, 
+  getChannelByID, 
+  getChannelMessages as getMessagesInAChannel, 
+  updateChannelByID
+} from './controllers/channel.controller';
+import { deleteMessageByID, getMessageByID, sendMessageToChannel, updateMessageByID } from "./controllers/message.controller";
 import { getServerAPIKey,getChatToken } from "./controllers/authentication.controller";
 import { secureClientRoutesWithJWTs } from "./utils/auth";
 
@@ -29,38 +32,37 @@ app.use(cors())
 app.use(secureClientRoutesWithJWTs);
 
 app.get("/", function (req, res) {
-  return res.send("Hello World");
+  return res.send("Thanks for using our chat API. Please check out our docs");
 });
 // AUTHENTICATION ENDPOINTS
 app.get("/get-server-api-key", getServerAPIKey);
 app.get("/get-chat-token",getChatToken);
- 
-// USER ENDPOINTS
-app.post("/users/create", createUser);
-app.get("/users", () => console.log("get all users"));
-app.post("/users", () => console.log("create new user with given username"));
-app.get("/users/:user_id", () => console.log("Get data of a given user"));
-app.put("users/:user_id", () => console.log("Update user data"));
-app.delete("users/:user_id", () => console.log("Delete user"));
 
-// CONVERSATION ENDPOINTS
+// USER ENDPOINTS
+app.get("/users", getAllUsers);
+app.post("/users", createUser);
+app.get("/users/:user_id", getUserByID);
+app.put("users/:user_id", updateUserByID );
+app.delete("users/:user_id", deleteUserByID);
+
+// CHANNEL ENDPOINTS
 app.post("/channels", createChannel);
-app.get("channels/:channel_id", () => console.log("get channel data"));
-app.put("channels/:channel_id", () => console.log("update channel data"));
-app.delete("channels/:channel_id", () => console.log("delete channel"));
+app.get("channels/:channel_id", getChannelByID);
+app.put("channels/:channel_id", updateChannelByID);
+app.delete("channels/:channel_id", deleteChannelByID);
 app.get("/channels", getAllChannels)
 app.get("/channels/:channel_id/messages", getMessagesInAChannel)
 
 app.post("/channels/:channel_id/users/:user_id", () => console.log("join a channel"));
 
-// SEND A MESSAGE
-app.post("/messages", addMessageToAChannel)
-app.get("messages/:message_id", () => console.log("get message data"));
-app.put("messages/:message_id", () => console.log("update message data"));
-app.delete("messages/:message_id", () => console.log("delete message"));
+// Messages
+app.post("/messages", sendMessageToChannel)
+app.get("messages/:message_id",getMessageByID);
+app.put("messages/:message_id", updateMessageByID);
+app.delete("messages/:message_id", deleteMessageByID);
 
 // Unclear parts
-app.post("users/connect", () => console.log("connect user to all channels"));
+app.post("users/connect", connectUser);
 app.get("/users/search?q=:query", searchUsers);
 
 

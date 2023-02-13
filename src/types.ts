@@ -34,7 +34,7 @@ export interface User {
     created_at: string;
 }
 
-export interface Conversation {
+export interface Channel {
     id: string;
     name: string;
     owner_user_id: string;
@@ -49,9 +49,9 @@ export interface Message {
     created_at: string;
 }
 
-export interface UserConversation {
+export interface UserChannel {
     user_id: string;
-    conversation_id: string;
+    channel_id: string;
 }
 
 export interface SocketConnectedUsers {
@@ -69,6 +69,7 @@ export interface SocketSocketIdUserId {
 export interface UserPayLoad {
     username:string;
     team:string;
+    appID:string;
     iat:number;
     exp:number
   }

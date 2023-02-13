@@ -9,7 +9,7 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      conversations: {
+      channels: {
         Row: {
           created_at: string
           id: string
@@ -31,40 +31,40 @@ export interface Database {
       }
       messages: {
         Row: {
-          conversation_id: string | null
+          channel_id: string | null
           created_at: string
           id: string
           message: string
           user_id: string | null
         }
         Insert: {
-          conversation_id?: string | null
+          channel_id?: string | null
           created_at: string
           id?: string
           message: string
           user_id?: string | null
         }
         Update: {
-          conversation_id?: string | null
+          channel_id?: string | null
           created_at?: string
           id?: string
           message?: string
           user_id?: string | null
         }
       }
-      user_conversation: {
+      user_channel: {
         Row: {
-          conversation_id: string | null
+          channel_id: string | null
           id: string
           user_id: string | null
         }
         Insert: {
-          conversation_id?: string | null
+          channel_id?: string | null
           id?: string
           user_id?: string | null
         }
         Update: {
-          conversation_id?: string | null
+          channel_id?: string | null
           id?: string
           user_id?: string | null
         }

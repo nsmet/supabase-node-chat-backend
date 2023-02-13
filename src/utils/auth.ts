@@ -10,11 +10,14 @@ async function verifyToken(token:string) {
     if (!jwtKey) throw new Error("No JWT key found")
     if (!token) return false
     try{
-      const {team,username} = await jwt.verify(token,jwtKey) as UserPayLoad
+      const {team,username,appID} = await jwt.verify(token,jwtKey) as UserPayLoad
       if (!team){
         return false
       }
       if (!username){
+        return false
+      }
+      if (!appID){
         return false
       }
       return true
@@ -41,16 +44,16 @@ export const secureClientRoutesWithJWTs = async (req:Request, res:Response, next
   
     next();
   }
-
   
-
-export const newAPIKey = async function (username:string) {
+export const newAPIKey = async function (keyDetails:{userID:string,appID:string,companyID:string}) {
+    const {userID, appID,companyID} = keyDetails
     const newKey = crypto.randomUUID();
+
     try{
         const {data, error } = await supabase
-        .from('users')
-        .update({ apikey: newKey })
-        .eq('username', username)
+        .from('api_keys')
+        .upsert({ key: newKey,app_id:appID,company_id:companyID,owner_user_id:userID,name:"new API key"})
+        .eq('app_id', appID)
         if (error){
             console.log(error)
         }
@@ -62,21 +65,30 @@ export const newAPIKey = async function (username:string) {
         console.log(err)
     }
 }
-export const isValidAPIKey = async function (username:string, apikey:string) {
-
-    try{
+export const isValidAPIKey = async function (appID:string, receivedAPIKey:string) {
+  try{
+    console.log({appID})
+    console.log({receivedAPIKey})
         const { data, error } = await supabase
-        .from('users')
-        .select('apikey')
-        .eq('username', username)
+        .from('api_keys')
+        .select('key')
+        .eq('app_id', appID)
+        .eq('key', receivedAPIKey)
         if (error){
-            
+            console.log(error)
             return false
         }
         else{
-            if (data.length === 0) return false
-            const storedAPIKey = data[0].apikey
-            return apikey === storedAPIKey
+            if (data.length === 0) {
+              console.log("No api key found")
+              return false
+            }
+            if (data.length > 1) {
+              console.log("MORE THAN ONE API KEY FOUND")
+              return false
+            }
+            const storedAPIKey = data[0].key
+            return receivedAPIKey === storedAPIKey
         }
     }catch(err){
         return false
