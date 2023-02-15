@@ -29,3 +29,4 @@ export const createNewCompany = async (req:TypedRequestBody<{name:string,user_id
         return res.status(500).json({error:"Could not create company"})
     }
   }
+  

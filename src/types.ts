@@ -37,8 +37,9 @@ export interface User {
 export interface Channel {
     id: string;
     name: string;
-    owner_user_id: string;
+    owner_user_id: string | null;
     created_at: string;
+    updated_at:string;
     participants?: User[];
 }
 
