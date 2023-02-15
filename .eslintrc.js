@@ -12,5 +12,6 @@ module.exports = {
     'no-console': 'off',
     'import/prefer-default-export': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
+    'prefer-spread': ['off']
   },
 };

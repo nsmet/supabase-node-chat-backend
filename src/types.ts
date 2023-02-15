@@ -3,6 +3,12 @@ import { Socket } from "socket.io"
 export interface TypedRequestBody<T> extends Express.Request {
     body: T
   }
+export interface TypedRequestBodyWithHeader<T> extends Express.Request {
+    body: T
+    headers:{
+        authorization:string
+    }
+  }
   
 export interface TypedRequestQuery<T> extends Express.Request {
     query: T
@@ -28,11 +34,12 @@ export interface User {
     created_at: string;
 }
 
-export interface Conversation {
+export interface Channel {
     id: string;
     name: string;
-    owner_user_id: string;
+    owner_user_id: string | null;
     created_at: string;
+    updated_at:string;
     participants?: User[];
 }
 
@@ -43,9 +50,9 @@ export interface Message {
     created_at: string;
 }
 
-export interface UserConversation {
+export interface UserChannel {
     user_id: string;
-    conversation_id: string;
+    channel_id: string;
 }
 
 export interface SocketConnectedUsers {
@@ -59,3 +66,11 @@ export interface SocketConnectedUsers {
 export interface SocketSocketIdUserId {
     [key: string]: string
 }
+
+export interface UserPayLoad {
+    userID:string;
+    companyID:string;
+    appID:string;
+    iat:number;
+    exp:number
+  }
